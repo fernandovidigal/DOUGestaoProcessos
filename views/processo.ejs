@@ -1,0 +1,169 @@
+<%- include('includes/header.ejs') %>
+
+<div class="maincontent no-padding flex-item flex-column">
+  <div class="maincontent__header mt-50 ml-50 mr-50">
+    <a href="<%= locals.selectedMenu == 'processos' ? '/' : '/arquivo' %>" class="maincontent__backarrow"></a>
+    <h1>Detalhes do Processo</h1>
+  </div>
+  
+  <div class="processodetailswrapepr mb-50 ml-50 mr-50">
+    <div class="processodetails">
+      <%
+        var estado = 'Activo';
+        if(processo.estado == 2) estado = 'Suspenso';
+        if(processo.estado == 0) estado = 'Encerrado';
+      %>
+      <span class="tag tag__<%= estado %>"><%= estado %></span>
+      <p class="processo__referencia"><%= processo.referencia %></p>
+      <p class="processo__designacao"><%= processo.designacao %></p>
+      <p class="processo__tipologia"><%= processo.tipologia.designacao %></p>
+    </div>
+    <% if(processo.estado !=0){ %>
+      <div class="processooptions">
+        <svg xmlns="http://www.w3.org/2000/svg" class="processooptions__btn" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M2.132 13.63a9.942 9.942 0 0 1 0-3.26c1.102.026 2.092-.502 2.477-1.431.385-.93.058-2.004-.74-2.763a9.942 9.942 0 0 1 2.306-2.307c.76.798 1.834 1.125 2.764.74.93-.385 1.457-1.376 1.43-2.477a9.942 9.942 0 0 1 3.262 0c-.027 1.102.501 2.092 1.43 2.477.93.385 2.004.058 2.763-.74a9.942 9.942 0 0 1 2.307 2.306c-.798.76-1.125 1.834-.74 2.764.385.93 1.376 1.457 2.477 1.43a9.942 9.942 0 0 1 0 3.262c-1.102-.027-2.092.501-2.477 1.43-.385.93-.058 2.004.74 2.763a9.942 9.942 0 0 1-2.306 2.307c-.76-.798-1.834-1.125-2.764-.74-.93.385-1.457 1.376-1.43 2.477a9.942 9.942 0 0 1-3.262 0c.027-1.102-.501-2.092-1.43-2.477-.93-.385-2.004-.058-2.763.74a9.942 9.942 0 0 1-2.307-2.306c.798-.76 1.125-1.834.74-2.764-.385-.93-1.376-1.457-2.477-1.43zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+        </svg>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="processohistoricowrapper pl-50 pr-50 pb-50">
+    <% if(locals.processo.historicos && processo.historicos.length> 0 || locals.noHistorico){ %>
+      <div class="processohistorico__buttons">
+        <form action="/processo/procurarHistorico/<%= processo.processoId %>" method="post" class="search__form">
+          <% if(locals.termos){ %>
+            <a href="/processo/<%= processo.processoId %>" class="search__clear">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="search__clear--icon">
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                  d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+              </svg>
+            </a>
+          <% } %>
+          <input type="text" name="searchterms" id="searchterms" class="search__input search__input--white" placeholder="Pesquise no histórico..."
+            <%=locals.termos ? 'value=' +locals.termos : '' %>>
+          <button type="submit" class="search__iconButton search__iconButton--white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="search__iconButton--icon">
+              <path fill="none" d="M0 0h24v24H0z" />
+              <path
+                d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+            </svg>
+          </button>
+        </form>
+        <% if(processo.estado == 1){ %>
+          <a href="/processo/adicionarhistorico/<%= processo.processoId %>" class="btn btn__primary btn__primary--small mr-left-20">Adicionar Histórico</a>
+        <% } %>
+      </div>
+
+      <div class="processohistorico__title">Situação do Processo</div>
+    
+      <% if(!locals.noHistorico){ %>
+        <div class="historico__list">
+          <% for(historico of processo.historicos){ %>
+            <% var today = historico.data; 
+              var day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+              var month = (today.getMonth()+1) < 10 ? '0' + (today.getMonth()+1) : (today.getMonth()+1);
+              var date = day + '/' + month + '/' + today.getFullYear(); 
+            %>
+            <div class="historico__list__item">
+              <div class="historico__list__item--data"><%= date %> - <em><%= historico.utilizadore.nome %></em></div>
+              <div class="historico__list__item--descricao"><%- historico.descricao %></div>
+              <% if(historico.utilizadorId == loggedUser.utilizadorId && processo.estado != 0) { %>
+                <div class="historico__list__item--options">
+                  <a href="/processo/editarHistorico/<%= historico.historicoId %>" title="Editar">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="edit"
+                    class="historico__list__item--options__editBtn" role="img" viewBox="0 0 576 512">
+                      <path fill="currentColor"
+                      d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" />
+                    </svg>
+                  </a>
+                  <a class="deleteHistoricoBtn" data-historico="<%= historico.historicoId %>" title="Eliminar">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash-alt"
+                      class="historico__list__item--options__deleteBtn" role="img" viewBox="0 0 448 512">
+                      <path fill="currentColor"
+                        d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z" />
+                    </svg>
+                  </a>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
+      <% } else { %>
+          <p class="processohistorico__nohistorico">Não existem resultados para <strong><em><%= locals.termos %></em></strong></p>
+      <% } %>
+    <% } else { %>
+      <div class="no-content__wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="no-content__icon">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M17 2h3a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3V0h2v2h6V0h2v2zm0 2v2h-2V4H9v2H7V4H5v16h14V4h-2zM7 8h10v2H7V8zm0 4h10v2H7v-2z" />
+        </svg>
+        <p class="no-content__text">Não existe histórico registado</p>
+        <% if(processo.estado==1 && locals.loggedUser.utilizadorId !=0){ %>
+          <a href="/processo/adicionarhistorico/<%= processo.processoId %>" class="btn btn__primary btn__primary--small mr-left-20">Adicionar Histórico</a>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="processo__options__wrapper">
+  <svg class="processo__options__closeBtn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="none" d="M0 0h24v24H0z" />
+    <path
+      d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+  </svg>
+  <div class="processo__options__container">
+    <div class="processo__options__header">
+      Opções do Processo
+    </div>
+    <div class="processo__options__list">
+      <a href="/editarProcesso/<%= processo.processoId %>" class="processo__options__list__item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M6.414 16L16.556 5.858l-1.414-1.414L5 14.586V16h1.414zm.829 2H3v-4.243L14.435 2.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 18zM3 20h18v2H3v-2z" />
+        </svg>
+        Editar Processo
+      </a>
+      <% if(processo.estado == 1){ %>
+        <a href="/processo/<%= processo.processoId %>/suspenderProcesso" class="processo__options__list__item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path
+              d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 9h2v6H9V9zm4 0h2v6h-2V9z" />
+          </svg>
+          Suspender Processo
+        </a>
+      <% } %>
+      <% if(processo.estado==2){ %>
+        <a href="/processo/<%= processo.processoId %>/reactivarProcesso" class="processo__options__list__item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path
+              d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z" />
+          </svg>
+          Reactivar Processo
+        </a>
+        <% } %>
+      <% if(processo.estado != 3){ %>
+        <a href="/processo/<%= processo.processoId %>/encerrarProcesso" class="processo__options__list__item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path fill="none" d="M0 0h24v24H0z" />
+            <path
+              d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
+          </svg>
+          Encerrar Processo
+        </a>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<div class="overlay"></div>
+
+<script src="/js/processo.js"></script>
+<%- include('includes/footer.ejs') %>

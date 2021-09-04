@@ -1,0 +1,68 @@
+<%- include('includes/header.ejs') %>
+
+<div class="maincontent">
+  <div class="maincontent__header">
+    <a href="/processo/<%= processo.processoId %>" class="maincontent__backarrow"></a>
+    <h1>Adicionar Histórico ao Processo</h1>
+  </div>
+
+  <div class="processodetailswrapepr">
+    <div class="processodetails">
+      <p class="processo__referencia"><%= processo.referencia %></p>
+      <p class="processo__designacao"><%= processo.designacao %></p>
+      <p class="processo__tipologia"><%= processo.tipologia.designacao %></p>
+    </div>
+  </div>
+
+  <%
+    var today = new Date();
+    var day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+    var month = (today.getMonth()+1) < 10 ? '0' + (today.getMonth()+1) : (today.getMonth()+1);
+    var date = day + '/' + month + '/' + today.getFullYear();
+  %>
+
+  <form action="/processo/adicionarhistorico/<%= processo.processoId %>" method="post">
+    <div class="form-group">
+      <label for="data">Data</label>
+      <% if(locals.errors){ 
+        var erroData = errors.find(el=> el.param == 'data');
+      } %>
+      <div class="datepicker">
+        <input type="text" name="data" id="data" class="form-control data__input <%= erroData ? 'form-control--invalid': '' %>" value="<%= locals.oldHistorico ? oldHistorico.data : date %>" readonly>
+        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="far" data-icon="calendar"
+          class="calendaricon" role="img" viewBox="0 0 448 512">
+          <path fill="currentColor"
+            d="M400 64h-48V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H160V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zm-6 400H54c-3.3 0-6-2.7-6-6V160h352v298c0 3.3-2.7 6-6 6z" />
+        </svg>
+        <% if(erroData){ %>
+          <div class="invalid-feedback">
+            <%= erroData.msg %>
+          </div>
+        <%} %>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="">Descrição</label>
+      <% if(locals.errors){
+        var erroDescricao=errors.find(el=> el.param == 'historicocontent');
+      } %>
+      <div class="editor-container <%= erroDescricao ? 'form-control--invalid': '' %>">
+        <div id="historico"></div>
+      </div>
+      <textarea name="historicocontent" id="historicocontent" cols="30" rows="10"><%= locals.oldHistorico ? oldHistorico.descricao : '' %></textarea>
+      <% if(erroDescricao){ %>
+        <div class="invalid-feedback">
+          <%= erroDescricao.msg %>
+        </div>
+      <%} %>
+    </div>
+    <div class="forminput__buttons mt-20">
+      <input type="submit" value="Adicionar" class="btn btn__primary">
+      <a href="/processo/<%= processo.processoId %>" class="btn btn__secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<script src="/js/processo.js"></script>
+<script src="/js/datepicker.js"></script>
+<%- include('includes/footer.ejs') %>

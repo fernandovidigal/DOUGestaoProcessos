@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>DOU - Gestão de Processos</title>
+</head>
+<body class="login__page">
+    <div class="login__wrapper">
+        <div class="login__container">
+            <div class="login__logo">
+                <div class="logo">
+                    <svg viewBox="0 0 20 20" class="login-icon" height="42" width="42" focusable="false" role="img" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="StyledIconBase-ea9ulj-0 duvCfz">
+                        <path d="M14 14.6c-.967 0-1.796.576-2.176 1.4H8.5A1.5 1.5 0 017 14.5v-3.85c.456.218.961.35 1.5.35h3.324a2.396 2.396 0 004.576-1 2.397 2.397 0 00-4.576-1H8.5A1.5 1.5 0 017 7.5V5.176A2.396 2.396 0 006 .6a2.397 2.397 0 00-1 4.576V14.5A3.5 3.5 0 008.5 18h3.324a2.396 2.396 0 004.576-1 2.4 2.4 0 00-2.4-2.4zm0-5.985a1.384 1.384 0 110 2.768 1.384 1.384 0 010-2.768zm-8-7a1.384 1.384 0 110 2.768 1.384 1.384 0 010-2.768zm8 16.77a1.385 1.385 0 110-2.77 1.385 1.385 0 010 2.77z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="login__form">
+                <h2>DOU - Gestão de Processos</h2>
+                <div class="message__wrapper">
+                    <% if(type == 'success'){ %>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="success__icon">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-.997-4L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z" />
+                        </svg>
+                    <% } %>
+                    <% if(type=='error'){ %>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="error__icon">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
+                        </svg>
+                    <% } %>
+                    <div class="message__content">
+                        <p class="message__title"><%= title %></p>
+                        <p class="message__text"><%= msg %></p>
+                    </div>
+                </div>
+                <div class="forminput__buttons mt-50">
+                    <a href="/<%= backPage %>" class="btn btn__secondary">Voltar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

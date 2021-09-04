@@ -1,0 +1,38 @@
+{
+  "name": "gestao-processos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "concurrently \"npm run watch:*\" \"nodemon app.js\"",
+    "watch:css": "parcel watch ./devAssets/scss/*.scss --out-dir ./assets/css/ --no-source-maps --no-hmr",
+    "watch:js": "parcel watch ./devAssets/js/*.js --out-dir ./assets/js/ --no-source-maps"
+  },
+  "author": "Fernando Vidigal",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^0.21.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.5.3",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "express-validator": "^6.6.1",
+    "nodemailer": "^6.5.0",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pikaday": "^1.8.2",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0",
+    "sweetalert2": "^10.9.0"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.0",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.28.0"
+  }
+}

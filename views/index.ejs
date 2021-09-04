@@ -1,0 +1,143 @@
+<%- include('includes/header.ejs') %>
+
+<div class="maincontent">
+    <div class="maincontent__header maincontent__header--spaceBetweeen">
+        <h1><%= locals.selectedMenu=='arquivo' ? 'Arquivo' : 'Processos' %></h1>
+
+        <% if(processos.length > 0 || locals.termos){ %>
+            <div class="maincontent__header__buttonBar">
+                <form action="<%= locals.selectedMenu == 'arquivo' ? 'arquivo' : '' %>/procurar" method="post" class="search__form">
+                    <% if(locals.termos){ %>
+                        <a href="/" class="search__clear">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="search__clear--icon">
+                                <path fill="none" d="M0 0h24v24H0z" />
+                                <path
+                                    d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                            </svg>
+                        </a>
+                    <% } %>
+                    <input type="text" name="searchterms" id="searchterms" class="search__input <%= locals.termos ? 'pr-85': '' %>" placeholder="Pesquise por projectos..." <%=locals.termos ? 'value=' +locals.termos : '' %>>
+                    <button type="submit" class="search__iconButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="search__iconButton--icon">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+                        </svg>
+                    </button>
+                </form>
+                <% if(locals.selectedMenu != 'arquivo' && locals.loggedUser.utilizadorId != 0){ %>
+                    <a href="/adicionarProcesso" class="btn btn__primary btn__primary--small mr-left-20">Adicionar</a>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+
+    <% if(processos.length > 0){ %>
+        <div class="listaprocessos__wrapper">
+            <table class="table table--selectable">
+                <tr>
+                    <th class="listaprocessos__item--tag"></th>
+                    <th class="listaprocessos__item--referencia" align="left">Referência</th>
+                    <th class="listaprocessos__item--tipoprocesso" align="left">Tipo Processo</th>
+                    <th class="listaprocessos__item--designacao" align="left">Designação</th>
+                    <th class="listaprocessos__item--moreoptions"></th>
+                </tr>
+                <% for(processo of processos){ %>
+                    <tr class="table_data_row" data-processo="<%= processo.processoId %>">
+                        <%
+                            var tag = 'circletag__activo';
+                            if(processo.estado == 2){
+                                tag = 'circletag__suspenso';
+                            }
+                            if(processo.estado == 0){
+                                tag = 'circletag__encerrado';
+                            }
+                        %>
+                        <td class="listaprocessos__item--tag" align="center"><span class="circletag <%= tag %>"></span></td>
+                        <td class="listaprocessos__item--referencia"><%= processo.referencia != null ? processo.referencia : 'Não aplicável' %></td>
+                        <td class="listaprocessos__item--tipoprocesso"><%= processo.tipologia.designacao %></td>
+                        <td class="listaprocessos__item--designacao"><%= processo.designacao %></td>
+                        <td class="listaprocessos__item--moreoptions">
+                            <span class="table__actionButtons">
+                                <% if(processo.estado !=0) { %>
+                                    <a href="/editarProcesso/<%= processo.processoId %>" class="table__actionButtons--button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="editIcon">
+                                            <path fill="none" d="M0 0h24v24H0z" />
+                                            <path
+                                                d="M12.9 6.858l4.242 4.243L7.242 21H3v-4.243l9.9-9.9zm1.414-1.414l2.121-2.122a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414l-2.122 2.121-4.242-4.242z" />
+                                        </svg>
+                                    </a>
+                                <% } %>
+                                <a class="table__actionButtons--button processo-deleteBtn" data-processo="<%= processo.processoId %>" data-referencia="<%= processo.referencia %>" data-designacao="<%= processo.designacao %>">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="deleteIcon">
+                                        <path fill="none" d="M0 0h24v24H0z" />
+                                        <path
+                                            d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
+                                    </svg>
+                                </a>
+                            </span>
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" class="moreoptions__btn" viewBox="0 0 512 512">
+                                <circle cx="256" cy="256" r="48" />
+                                <circle cx="416" cy="256" r="48" />
+                                <circle cx="96" cy="256" r="48" />
+                            </svg>
+                            <div class="moreoptions__menu">
+                                <% if(processo.estado !=0) { %>
+                                <a href="/editarProcesso/<%= processo.processoId %>" class="moreoptions__menu--item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas"
+                                        data-icon="edit" class="moreoptions__editBtn" role="img" viewBox="0 0 576 512">
+                                        <path fill="#00397D"
+                                            d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" />
+                                    </svg>
+                                    <span>Editar</span>
+                                </a>
+                                <% } %>
+                                <a class="moreoptions__menu--item processo-deleteBtn" data-processo="<%= processo.processoId %>" data-referencia="<%= processo.referencia %>" data-designacao="<%= processo.designacao %>">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas"
+                                        data-icon="trash-alt" class="moreoptions__deleteBtn" role="img" viewBox="0 0 448 512">
+                                        <path fill="#CC4F4F"
+                                            d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z" />
+                                    </svg>
+                                    <span>Eliminar</span>
+                                </a>
+                            </div> -->
+                        </td>
+                    </tr>
+                <% } %>
+            </table>
+        </div>
+    <% } else { %>
+        <% if(locals.termos){ %>
+            <div class="no-content__wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="no-content__icon">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path
+                        d="M12 2c5.523 0 10 4.477 10 10 0 .727-.077 1.435-.225 2.118l-1.782-1.783a8 8 0 1 0-4.375 6.801 3.997 3.997 0 0 0 1.555 1.423A9.956 9.956 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2zm7 12.172l1.414 1.414a2 2 0 1 1-2.93.11l.102-.11L19 14.172zM12 15c1.466 0 2.785.631 3.7 1.637l-.945.86C13.965 17.182 13.018 17 12 17c-1.018 0-1.965.183-2.755.496l-.945-.86A4.987 4.987 0 0 1 12 15zm-3.5-5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+                </svg>
+                <p class="no-content__text">Não existem resultados para <span class="no-content__text--black"><%= locals.termos %></span></p>
+            </div>
+        <% } else { %>
+            <div class="no-content__wrapper">
+                <% if(locals.selectedMenu=='arquivo'){ %>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="no-content__icon">
+                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path
+                            d="M3 10H2V4.003C2 3.449 2.455 3 2.992 3h18.016A.99.99 0 0 1 22 4.003V10h-1v10.001a.996.996 0 0 1-.993.999H3.993A.996.996 0 0 1 3 20.001V10zm16 0H5v9h14v-9zM4 5v3h16V5H4zm5 7h6v2H9v-2z" />
+                    </svg>
+                <% } else { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="no-content__icon">
+                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path
+                            d="M20.083 15.2l1.202.721a.5.5 0 0 1 0 .858l-8.77 5.262a1 1 0 0 1-1.03 0l-8.77-5.262a.5.5 0 0 1 0-.858l1.202-.721L12 20.05l8.083-4.85zm0-4.7l1.202.721a.5.5 0 0 1 0 .858L12 17.65l-9.285-5.571a.5.5 0 0 1 0-.858l1.202-.721L12 15.35l8.083-4.85zm-7.569-9.191l8.771 5.262a.5.5 0 0 1 0 .858L12 13 2.715 7.429a.5.5 0 0 1 0-.858l8.77-5.262a1 1 0 0 1 1.03 0zM12 3.332L5.887 7 12 10.668 18.113 7 12 3.332z" />
+                    </svg>
+                <% } %>
+                <p class="no-content__text">Não existem processos <%= locals.selectedMenu=='arquivo' ? 'arquivados' : 'registados' %> </p>
+                <% if(locals.selectedMenu!='arquivo' && locals.loggedUser.utilizadorId != 0){ %>
+                    <a href="/adicionarProcesso" class="btn btn__primary btn__primary--small mr-left-20">Adicionar Processo</a>
+                <% } %>
+            </div>
+        <% } %>
+    <% } %>
+</div>
+
+<%- include('includes/footer.ejs') %>

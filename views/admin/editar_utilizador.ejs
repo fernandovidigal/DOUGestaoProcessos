@@ -1,0 +1,74 @@
+<%- include('../includes/header.ejs') %>
+
+<div class="maincontent">
+    <div class="maincontent__header">
+        <a href="/admin/utilizadores" class="maincontent__backarrow"></a>
+        <h1>Editar Utilizador</h1>
+    </div>
+
+    <form action="/admin/updateUtilizador/<%= utilizador.utilizadorId %>" method="post">
+        <div class="form-group">
+            <% if(locals.errors){ 
+                var erroNome = errors.find(el=> el.param == 'nome');
+                var unique = errors.find(el => el.param == 'unique');
+            } %>
+            <label for="nome">Nome</label>
+            <input type="text" name="nome" id="nome"
+                class="form-control <%= erroNome || unique ? 'form-control--invalid': '' %>" size="60"
+                value="<%= locals.utilizador ? utilizador.nome : '' %>">
+            <% if(erroNome || unique){ %>
+                <div class="invalid-feedback">
+                    <%= erroNome.msg || unique.msg %>
+                </div>
+            <%} %>
+        </div>
+        <div class="form-group">
+            <% if(locals.errors){ 
+                var erroEmail = errors.find(el=> el.param == 'email');
+            } %>
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email"
+                class="form-control <%= erroEmail || unique ? 'form-control--invalid': '' %>" size="60"
+                value="<%= locals.utilizador ? utilizador.email : '' %>">
+            <% if(erroEmail){ %>
+                <div class="invalid-feedback">
+                    <%= erroEmail.msg %>
+                </div>
+            <%} else if(unique){ %>
+                <div class="invalid-feedback">
+                    <%= unique.msg %>
+                </div>
+            <% } %>
+        </div>
+        
+        <div class="form-group">
+            <% if(locals.errors){ 
+                var erroNivel=errors.find(el=> el.param == 'nivel');
+            } %>
+            <label>Nível</label>
+            <div class="form-check">
+                <input type="radio" name="nivel" id="nivelUtilizador" class="form-check-input" value="1" <%=locals.utilizador ?
+                    (utilizador.nivel==1 ? 'checked' : '' ) : 'checked' %>>
+                <label class="form-check-label" for="nivelUtilizador" <%- erroNivel ? 'class="radio-invalid"' : ''
+                    %>>Utilizador</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" name="nivel" id="nivelAdministrador" class="form-check-input" value="10" <%=locals.utilizador ?
+                    (utilizador.nivel==10 ? 'checked' : '' ) : '' %>>
+                <label class="form-check-label" for="nivelAdministrador" <%- erroNivel ? 'class="radio-invalid"' : ''
+                    %>>Gestor</label>
+            </div>
+            <% if(erroNivel){ %>
+                <div class="invalid-feedback">
+                    <%= erroNivel.msg %>
+                </div>
+            <%} %>
+        </div>
+        <div class="forminput__buttons">
+            <input type="submit" value="Actualizar" class="btn btn__primary">
+            <a href="/admin/utilizadores" class="btn btn__secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<%- include('../includes/footer.ejs') %>

@@ -1,0 +1,32 @@
+<%- include('../includes/header.ejs') %>
+
+  <div class="maincontent">
+    <div class="maincontent__header">
+      <a href="/admin" class="maincontent__backarrow"></a>
+      <h1>Servidor</h1>
+    </div>
+
+    <form action="/admin/servidor" method="post">
+      <div class="form-group">
+        <% if(locals.errors){ 
+          var erroPorta=errors.find(el=> el.param == 'porta');
+        } %>
+        <label for="porta">Porta</label>
+        <input type="text" name="porta" id="porta" class="form-control <%= erroPorta ? 'form-control--invalid': '' %>" size="4" value="<%= server.porta %>">
+        <% if(erroPorta){ %>
+          <div class="invalid-feedback">
+            <%= erroPorta.msg %>
+          </div>
+        <%} %>
+      </div>
+
+      <div class="forminput__buttons">
+        <input type="submit" class="btn btn__primary" value="Guardar">
+        <a href="/admin" class="btn btn__secondary">Cancelar</a>
+      </div>
+    </form>
+
+
+  </div>
+<script src="/js/admin.js"></script>
+<%- include('../includes/footer.ejs') %>

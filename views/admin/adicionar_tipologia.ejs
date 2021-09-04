@@ -1,0 +1,27 @@
+<%- include('../includes/header.ejs') %>
+
+<div class="maincontent">
+  <div class="maincontent__header">
+    <a href="/admin/listaTipologias" class="maincontent__backarrow"></a>
+    <h1>Adicionar Tipo de Processo</h1>
+  </div>
+  
+  <form action="/admin/criarTipologia" method="post">
+    <div class="form-group">
+      <label for="designacao">Designação</label>
+      <input type="text" name="designacao" size="50" class="form-control <%= locals.errors ? 'form-control--invalid': '' %>" id="designacao" value="<% locals.oldData ? oldData.designacao : '' %>">
+      <% if(locals.errors){ %>
+        <div class="invalid-feedback">
+          <%= errors[0].msg %>
+        </div>
+        <% } %>
+    </div>
+    
+    <div class="forminput__buttons">
+      <input type="submit" class="btn btn__primary" value="Adicionar">
+      <a href="/admin/listaTipologias" class="btn btn__secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../includes/footer.ejs') %>
